@@ -1,0 +1,69 @@
+<ui:composition template="/WEB-INF/template/LayoutDeslogado.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:o="http://omnifaces.org/ui">
+
+    <ui:define name="titulo">Soccer Talk - Cadastro</ui:define>
+
+    <ui:define name="corpo">
+
+        <f:metadata>
+            <o:viewParam name="usu"/>
+            <f:event listener="#{cadastroUsuarioBean.inicializar}" type="preRenderView" />
+        </f:metadata>
+
+        <div align="center">
+            <h:graphicImage library="images" name="SOCCERTALK_250px.png" />
+        </div>
+
+        <div id="login-dialog">
+            <h1>Cadastro</h1>
+
+            <h:form>
+
+                <p:messages id="messages" autoUpdate="true" closable="true" />
+
+                <p:panelGrid columns="2" id="painel" style="width: 100%; margin-top: 20px"
+                             columnClasses="rotulo, campo">
+
+                    <p:outputLabel value="Username" for="nome"/>
+                    <p:inputText id="nome" size="20" maxlength="20" value="#{cadastroUsuarioBean.usuario.nome}"/>
+
+                    <p:outputLabel value="Email" for="email"/>
+                    <p:inputText id="email" size="40" maxlength="40" value="#{cadastroUsuarioBean.usuario.email}" />
+
+                    <p:outputLabel value="Senha" for="senha"/>
+                    <p:password id="senha" size="20" maxlength="20"
+                                value="#{cadastroUsuarioBean.usuario.senha}" />
+
+                    <p:outputLabel value="Confirmar senha" for="confirmSenha"/>
+                    <p:password id="confirmSenha" size="20" maxlength="20"
+                                value="#{cadastroUsuarioBean.confirmaSenha}" />
+
+                    <p:outputLabel value="Clube do coração" for="clube"/>
+                    <p:selectOneMenu id="clube" value="#{cadastroUsuarioBean.usuario.clube}" required="true"
+                                     var="c">
+                        <f:selectItems value="#{cadastroUsuarioBean.listaClubes}" var="clube"
+                                       itemValue="#{clube}" itemLabel="#{clube.nome}" />
+                        <p:column>
+                            <h:graphicImage library="images" name="#{c.sigla}.jpg"/>
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{c.nome}" />
+                        </p:column>
+
+                    </p:selectOneMenu>
+
+
+                </p:panelGrid>
+
+                <p:commandButton value="Salvar" id="botaoSalvar"
+                                 action="#{cadastroUsuarioBean.salvar()}" update="@form" />
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

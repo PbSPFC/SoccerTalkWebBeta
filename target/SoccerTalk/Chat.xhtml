@@ -1,0 +1,52 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:o="http://omnifaces.org/ui">
+
+    <ui:define name="titulo">Chat</ui:define>
+
+    <ui:define name="corpo">
+
+        <h:form id="form">
+            <p:messages autoUpdate="true"/>
+
+            <p:panel id="chatContainer" header="Chat">
+                <h:panelGroup rendered="#{not chatPage.loggedIn}">
+                    <p:outputLabel for="userName" value="User name:"/>
+                    <p:inputText disabled="true" id="userName" value="#{seguranca.nomeUsuario} [#{seguranca.timeSigla}]" styleClass="ml10"/>
+                    <p:commandButton value="Login" action="#{chatPage.login}" update="chatContainer"
+                                     styleClass="ml10" />
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{chatPage.loggedIn}">
+                    <p:outputPanel id="chat" layout="block"
+                                   styleClass="ui-corner-all ui-widget-content chatPanel"/>
+                    <p:inputText id="msg" value="#{chatPage.message}" styleClass="message"/>
+                    <p:commandButton value="Send" action="#{chatPage.sendMessage}" styleClass="ml10"
+                                     update="msg" oncomplete="$('#form\\:msg').focus()"/>
+                    <p:commandButton value="Logout" action="#{chatPage.logout}" update="chatContainer"
+                                     styleClass="ml10" oncomplete="redirect()"/>
+                </h:panelGroup>
+            </p:panel>
+        </h:form>
+
+        <p:socket onMessage="handleMessage" channel="/chat" autoConnect="false" widgetVar="subscriber"/>
+
+        <script type="text/javascript">
+            function handleMessage(data) {
+                var chatContent = $(PrimeFaces.escapeClientId('form:chat'));
+                chatContent.append(data + '&lt;br />');
+                chatContent.scrollTop(chatContent.height());
+            }
+        </script>
+        <script type="text/javascript">
+            redirect = function () {
+                window.location.href = '/SoccerTalk/Home.xhtml';
+            };
+        </script>
+    </ui:define>
+
+</ui:composition>
